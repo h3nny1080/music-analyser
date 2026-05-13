@@ -1,0 +1,16 @@
+fastapi>=0.111.0
+uvicorn[standard]
+python-multipart        # for file uploads in FastAPI
+pydantic-settings
+yt-dlp
+librosa
+soundfile
+numpy
+requests
+mutagen                 # audio metadata
+demucs>=4.0.0           # added when you build separation layer
+torch>=2.0.0
+torchaudio>=2.0.0
+basic-pitch>=0.3.0
+music21>=9.1.0
+soundfile

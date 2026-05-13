@@ -1,0 +1,152 @@
+# =============================================================================
+# SECRETS AND ENVIRONMENT
+# =============================================================================
+.env
+.env.local
+.env.production
+.env.*.local
+
+# =============================================================================
+# PYTHON
+# =============================================================================
+
+# Virtual environment
+venv/
+.venv/
+env/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+*.cover
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# =============================================================================
+# AI MODEL CACHE
+# =============================================================================
+
+# Hugging Face models (CLAP — ~600MB)
+~/.cache/huggingface/
+
+# Torch / Demucs models (~80MB)
+~/.cache/torch/
+
+# =============================================================================
+# AUDIO AND OUTPUT FILES
+# =============================================================================
+
+# Generated output stems and PDFs
+outputs/
+
+# Temporary audio working files
+*.wav
+*.mp3
+*.flac
+*.aiff
+*.aif
+*.ogg
+*.m4a
+*.mid
+*.midi
+
+# LilyPond intermediate files
+*.ly
+*.log
+*.ps
+
+# Test downloads
+test_download*
+test_score*
+test_output*
+
+# =============================================================================
+# FRONTEND
+# =============================================================================
+
+# Node modules
+frontend/node_modules/
+
+# Vite build output
+frontend/dist/
+frontend/.vite/
+
+# Local env files
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# =============================================================================
+# OPERATING SYSTEM
+# =============================================================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.directory
+
+# =============================================================================
+# EDITORS AND IDEs
+# =============================================================================
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# PyCharm / JetBrains
+.idea/
+*.iml
+
+# Vim
+*.swp
+*.swo
+
+# Jupyter notebooks (checkpoints)
+.ipynb_checkpoints/
+
+# =============================================================================
+# LOGS AND TEMP FILES
+# =============================================================================
+*.log
+logs/
+tmp/
+temp/
+C:/tmp/
+
+# =============================================================================
+# KEEP THESE FILES (override ignores above)
+# =============================================================================
+
+# Keep the env example so others can use it as a template
+!.env.example
