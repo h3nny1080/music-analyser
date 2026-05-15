@@ -28,7 +28,7 @@ A multi-agent system that analyses audio from YouTube, Spotify, SoundCloud, Appl
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/music-analyser.git
+git clone https://github.com/h3nny1080/music-analyser.git
 cd music-analyser
 ```
 
