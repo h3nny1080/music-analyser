@@ -9,7 +9,7 @@ import os
 import re
 from interaction.models import StemSelection, OutputChoice
 from separation.models import StemCollection
-from .sheet_music import stem_to_sheet_music
+from .sheet_music import stem_to_sheet_music, stem_to_midi_file
 from .audio_export import stem_to_audio_file
 from .models import OutputPackage, OutputFile
 
@@ -49,6 +49,12 @@ def run_output_layer(
                     stem, sel.instrument_label, output_dir, safe_session_id
                 )
                 package.files.append(pdf_file)
+
+            if sel.output_choice == OutputChoice.MIDI:
+                midi_file = stem_to_midi_file(
+                    stem, sel.instrument_label, output_dir, safe_session_id
+                )
+                package.files.append(midi_file)
 
             if sel.output_choice in (OutputChoice.AUDIO_ISOLATE, OutputChoice.BOTH):
                 audio_file = stem_to_audio_file(

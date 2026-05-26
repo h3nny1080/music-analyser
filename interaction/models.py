@@ -11,6 +11,7 @@ from enum import Enum
 class OutputChoice(Enum):
     SHEET_MUSIC   = "sheet_music"
     AUDIO_ISOLATE = "audio_isolate"
+    MIDI          = "midi"
     BOTH          = "both"
 
 @dataclass

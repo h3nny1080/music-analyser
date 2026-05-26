@@ -34,7 +34,7 @@ export default function UnclearStemCard({ stem, selection, onChange }) {
 
             {chosen && (
                 <div className="output-choices">
-                    {["sheet_music", "audio_isolate", "both"].map(choice => (
+                    {["sheet_music", "audio_isolate", "midi", "both"].map(choice => (
                         <label key={choice} className="choice-option">
                             <input
                                 type="radio"
@@ -48,6 +48,7 @@ export default function UnclearStemCard({ stem, selection, onChange }) {
                             />
                             {choice === "sheet_music"   ? "Sheet music"    : null}
                             {choice === "audio_isolate" ? "Isolated audio" : null}
+                            {choice === "midi"          ? "MIDI file"      : null}
                             {choice === "both"          ? "Both"           : null}
                         </label>
                     ))}

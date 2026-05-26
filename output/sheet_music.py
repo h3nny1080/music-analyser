@@ -38,6 +38,28 @@ MIDI_MIN_NOTE_LENGTH_MS = 80
 def _sanitise_filename(name: str) -> str:
     return re.sub(r'[<>:"/\\|?*\[\]]', '_', name)
 
+def stem_to_midi_file(
+    stem: Stem,
+    instrument_label: str,
+    output_dir: str,
+    session_id: str,
+) -> OutputFile:
+    os.makedirs(output_dir, exist_ok=True)
+    safe_label = _sanitise_filename(instrument_label.replace(" ", "_"))
+    safe_id    = _sanitise_filename(session_id)
+    midi_path  = os.path.join(output_dir, f"{safe_id}_{safe_label}.mid")
+
+    _audio_to_midi(stem.audio, stem.sample_rate, midi_path)
+
+    return OutputFile(
+        stem_name=stem.name,
+        instrument_label=instrument_label,
+        file_path=midi_path,
+        file_type="midi",
+        size_bytes=os.path.getsize(midi_path),
+    )
+
+
 def stem_to_sheet_music(
     stem: Stem,
     instrument_label: str,

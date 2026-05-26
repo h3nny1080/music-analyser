@@ -1,4 +1,4 @@
-const FILE_ICONS = { pdf: "🎼", wav: "🎵", flac: "🎵", aiff: "🎵" };
+const FILE_ICONS = { pdf: "🎼", wav: "🎵", flac: "🎵", aiff: "🎵", midi: "🎹" };
 
 export default function DownloadPanel({ outputs, onReset }) {
     return (
