@@ -5,6 +5,9 @@ Created on Sun May 10 13:04:53 2026
 @author: Olive
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from api.routes.analyse  import router as analyse_router

@@ -6,6 +6,7 @@ for the best-matching audio candidates to present to the user for confirmation.
 """
 
 import re
+import os
 import requests
 from dataclasses import dataclass
 from typing import Optional
@@ -28,6 +29,7 @@ def fetch_spotify_metadata(url: str, token: str) -> SpotifyMetadata:
     Fetch track metadata from the Spotify Web API.
     Requires a valid OAuth access token.
     """
+    token = os.environ.get("SPOTIFY_CLIENT_ID")
     if not token:
         raise IngestionError(
             "A Spotify access token is required. "
