@@ -12,7 +12,7 @@ export default function InputPanel({ onSubmit, loading }) {
 
     return (
         <div className="panel input-panel">
-            <div className="tab-row">
+            {/*<div className="tab-row">
                 <button
                     className={mode === "url" ? "tab active" : "tab"}
                     onClick={() => setMode("url")}
@@ -25,9 +25,9 @@ export default function InputPanel({ onSubmit, loading }) {
                 >
                     Upload a file
                 </button>
-            </div>
+            </div>*/}
 
-            {mode === "url" ? (
+            {/*{mode === "url" ? (
                 <div className="input-row">
                     <input
                         type="text"
@@ -45,7 +45,15 @@ export default function InputPanel({ onSubmit, loading }) {
                         onChange={e => setFile(e.target.files[0])}
                     />
                 </div>
-            )}
+            )}*/}
+
+            <div className="input-row">
+                    <input
+                        type="file"
+                        accept=".mp3,.wav,.flac,.aiff,.ogg,.m4a"
+                        onChange={e => setFile(e.target.files[0])}
+                    />
+                </div>
 
             <button
                 className="btn-primary"

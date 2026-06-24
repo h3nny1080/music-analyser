@@ -1,16 +1,15 @@
 # Music Analyser
 
-A multi-agent system that analyses audio from YouTube, Spotify, SoundCloud, Apple Music, or uploaded files. It identifies instruments using AI, then lets you export individual stems as isolated audio files or generate sheet music PDFs.
+A multi-agent system that analyses uploaded audio files. It identifies instruments using AI, then lets you export individual stems as isolated audio files or generate sheet music PDFs.
 
 ---
 
 ## What it does
 
-1. **Input** — paste a YouTube, Spotify, SoundCloud, or Apple Music link, or upload an audio file (MP3, WAV, FLAC, AIFF, OGG, M4A)
-2. **Confirm** — for streaming links, the system finds the track on YouTube and asks you to confirm before processing
-3. **Separate** — splits the audio into up to 6 stems (vocals, drums, bass, guitar, piano, other) using Meta's Demucs
-4. **Identify** — classifies each stem using Microsoft's CLAP model
-5. **Export** — choose any instrument to export as an isolated audio file (WAV/FLAC/AIFF) or as a PDF sheet music score
+1. **Input** — upload an audio file (MP3, WAV, FLAC, AIFF, OGG, M4A)
+2. **Separate** — splits the audio into up to 6 stems (vocals, drums, bass, guitar, piano, other) using Meta's Demucs
+3. **Identify** — classifies each stem using Microsoft's CLAP model
+4. **Export** — choose any instrument to export as an isolated audio file (WAV/FLAC/AIFF) or as a PDF sheet music score
 
 ---
 
@@ -166,13 +165,9 @@ cp .env.example .env
 Open `.env` and fill in your values:
 
 ```env
-SPOTIFY_CLIENT_ID=your_id_here
-SPOTIFY_CLIENT_SECRET=your_secret_here
 MAX_UPLOAD_MB=100
 LILYPOND_PATH=C:\Program Files (x86)\lilypond-2.26.0-mingw-x86_64\lilypond-2.26.0\bin\lilypond.EXE
 ```
-
-> **Spotify credentials** are only needed if you want Spotify link support. Register a free app at https://developer.spotify.com/dashboard to get your client ID and secret.
 
 > **macOS / Linux:** Update `LILYPOND_PATH` to the output of `which lilypond`, e.g. `/usr/local/bin/lilypond`
 
@@ -250,18 +245,12 @@ This makes the first analysis take longer than usual. Every run after that uses 
 
 | Type | Supported |
 |---|---|
-| YouTube links | ✅ Full track |
-| Spotify links | ✅ via YouTube match |
-| Apple Music links | ✅ via YouTube match |
-| SoundCloud links | ✅ Full track |
-| MP3 upload | ✅ |
-| WAV upload | ✅ |
-| FLAC upload | ✅ |
-| AIFF upload | ✅ |
-| OGG upload | ✅ |
-| M4A upload | ✅ |
-
-> **Note:** Spotify and Apple Music use DRM-protected streams. When you paste one of these links, the system fetches the track metadata and finds the same song on YouTube, then asks you to confirm the match before processing.
+| MP3 | ✅ |
+| WAV | ✅ |
+| FLAC | ✅ |
+| AIFF | ✅ |
+| OGG | ✅ |
+| M4A | ✅ |
 
 ---
 
@@ -309,9 +298,6 @@ The first run downloads the Demucs and CLAP models (~680MB total). Give it a few
 **Sheet music test skipped**
 LilyPond is not on your PATH. Verify with `lilypond --version` in a fresh terminal. If that fails, re-check the PATH step in section 2.
 
-**Spotify link returns no preview**
-Not all Spotify tracks have 30-second previews available via the API. The system will fall back to a YouTube search using the track metadata.
-
 **`[Errno 22] Invalid argument` on Windows**
 This is caused by special characters in file paths. Make sure your project is not inside a folder with brackets, ampersands, or other special characters in the path.
 
@@ -321,7 +307,6 @@ This is caused by special characters in file paths. Make sure your project is no
 
 | Layer | Technology |
 |---|---|
-| Audio download | yt-dlp |
 | Audio normalisation | ffmpeg, librosa |
 | Stem separation | Demucs htdemucs_6s |
 | Instrument classification | CLAP (laion/clap-htsat-unfused) |
