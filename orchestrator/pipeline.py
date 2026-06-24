@@ -9,13 +9,35 @@ import asyncio
 from ingestion.youtube import ingest_youtube
 from ingestion.file_upload import ingest_file
 from ingestion.detector import detect_input_type
-from ingestion.streaming import find_youtube_candidates
+from ingestion.streaming import fetch_track_metadata
+from ingestion.youtube_match_agent import search_youtube_for_track
+from ingestion.soundcloud_match_agent import ingest_soundcloud
+from ingestion.spotify_match_agent import search_spotify_track_on_youtube
 from ingestion.quality_gate import IngestionError
 from separation.demucs_agent import run_separation
 from classification.clap_agent import classify_all_stems
 from interaction.agent import build_selection_request
 from .session_store import create_session
 from .progress_store import set_progress, clear_progress
+
+
+def _confirm_response(session_id: str, metadata: dict, candidates: list) -> dict:
+    """Build the standard 'confirm' response sent to the frontend."""
+    return {
+        "status":     "confirm",
+        "session_id": session_id,
+        "metadata":   metadata,
+        "candidates": [
+            {
+                "url":              c.url,
+                "title":            c.title,
+                "channel":          c.channel,
+                "duration_seconds": c.duration_seconds,
+                "thumbnail_url":    c.thumbnail_url,
+            }
+            for c in candidates
+        ],
+    }
 
 
 async def run_full_pipeline(audio_obj, session_id: str) -> dict:
@@ -77,26 +99,68 @@ async def start_ingestion(
             asyncio.create_task(run_full_pipeline(audio, sid))
             return {"status": "processing", "session_id": sid}
 
-        # Streaming link — pause for user confirmation
-        set_progress(sid, "ingestion", 5, "Fetching track metadata…")
-        metadata, candidates = await asyncio.to_thread(
-            find_youtube_candidates, input_data, source, spotify_token
-        )
-        return {
-            "status":     "confirm",
-            "session_id": sid,
-            "metadata":   metadata,
-            "candidates": [
+        elif source == "spotify":
+            set_progress(sid, "ingestion", 5, "Looking up Spotify track…")
+            metadata, candidates = await asyncio.to_thread(
+                search_spotify_track_on_youtube, input_data, spotify_token
+            )
+            return _confirm_response(
+                sid,
                 {
-                    "url":              c.url,
-                    "title":            c.title,
-                    "channel":          c.channel,
-                    "duration_seconds": c.duration_seconds,
-                    "thumbnail_url":    c.thumbnail_url,
-                }
-                for c in candidates
-            ],
-        }
+                    "title":            metadata.title,
+                    "artist":           metadata.artist,
+                    "album":            metadata.album,
+                    "duration_seconds": metadata.duration_seconds,
+                    "source_url":       metadata.source_url,
+                    "platform":         "spotify",
+                },
+                candidates,
+            )
+
+        elif source == "apple_music":
+            set_progress(sid, "ingestion", 5, "Looking up Apple Music track…")
+            metadata = await asyncio.to_thread(
+                fetch_track_metadata, input_data, "apple_music"
+            )
+            print(metadata)
+            candidates = await asyncio.to_thread(
+                search_youtube_for_track,
+                metadata["title"], metadata["artist"], metadata.get("duration_seconds"),
+            )
+            if not candidates:
+                raise IngestionError(
+                    f"Could not find \"{metadata.get('artist', 'Unknown')} – {metadata.get('title', 'Unknown')}\" on YouTube. "
+                    "Apple Music metadata was estimated from the URL and may be inaccurate — "
+                    "try uploading an audio file directly."
+                )
+            return _confirm_response(sid, metadata, candidates)
+
+        elif source == "soundcloud":
+            set_progress(sid, "ingestion", 5, "Downloading from SoundCloud…")
+            audio = await asyncio.to_thread(ingest_soundcloud, input_data)
+            asyncio.create_task(run_full_pipeline(audio, sid))
+            return {"status": "processing", "session_id": sid}
+
+        elif source == "tidal":
+            set_progress(sid, "ingestion", 5, "Looking up Tidal track…")
+            metadata = await asyncio.to_thread(
+                fetch_track_metadata, input_data, "tidal"
+            )
+            print(metadata)
+            candidates = await asyncio.to_thread(
+                search_youtube_for_track,
+                metadata["title"], metadata["artist"], metadata.get("duration_seconds"),
+            )
+            if not candidates:
+                raise IngestionError(
+                    f"Could not find \"{metadata.get('artist', 'Unknown')} – {metadata.get('title', 'Unknown')}\" on YouTube. "
+                    "Tidal does not expose public metadata — "
+                    "try pasting a YouTube link or uploading the audio directly."
+                )
+            return _confirm_response(sid, metadata, candidates)
+
+        else:
+            raise IngestionError(f"Unsupported input source: {source!r}")
 
     except IngestionError as e:
         set_progress(sid, "error", 0, str(e))

@@ -14,6 +14,7 @@ class Settings(BaseSettings):
     temp_dir: str = "/tmp/music-analyser"
     output_dir: str = "./outputs"
     lilypond_path: str = r"C:\Program Files (x86)\lilypond-2.26.0-mingw-x86_64\lilypond-2.26.0\bin\lilypond.EXE"
+    hf_token: str = ""
 
     class Config:
         env_file = ".env"
